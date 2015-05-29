@@ -62,7 +62,8 @@ parse_dom () {
     mkdir -p tempdl
     wgetname=`echo $name | sed -e 's/ /%20/g'`
     wget $JIRA/$id/$wgetname -O "tempdl/$name"
-    FID=`$ARC upload --conduit-token=$ARCKEY --conduit-uri=$PHAB "tempdl/$name" 2>log  |grep "$name" | cut -d ' ' -f 3`
+    echo $ARC upload --conduit-token=$ARCKEY --conduit-uri=$PHAB "tempdl/$name"
+    FID=`$ARC upload --conduit-token=$ARCKEY --conduit-uri=$PHAB "tempdl/$name" |grep "$name" | cut -d ' ' -f 3`
     $ARCYON task-update --uri $PHAB --user $USER --cert $CERT --act-as-user $author $owner $TID --comment "On $created, $author uploaded $name as $FID"
     [[ -n "$FID" ]] && rm "tempdl/$name"
   elif [[ $TAG_NAME = "description" ]] ; then
