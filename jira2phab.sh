@@ -148,9 +148,9 @@ parse_dom () {
 
     if [ -n "$phabstat" ] ; then
       echo Final status $phabstat
-      desc="On $phabstatres, status was set to $phabstatresolution \n\n$phabstatdesc"
-      $ARC close --conduit-uri=$PHAB --conduit-token=$ARCKEY $TID --status=$phabstat -m "$(echo -e $desc)"
-      echo $ARC close --conduit-uri=$PHAB --conduit-token=$ARCKEY $TID --status=$phabstat -m "On $phabstatres, status was set to $phabstatresolution \n\n$phabstatdesc"
+      resdesc="On $phabstatres, status was set to $phabstatresolution \n\n$phabstatdesc"
+      $ARC close --conduit-uri=$PHAB --conduit-token=$ARCKEY $TID --status=$phabstat -m "$(echo -e $resdesc)"
+      echo $ARC close --conduit-uri=$PHAB --conduit-token=$ARCKEY $TID --status=$phabstat -m "$(echo -e $resdesc)"
     fi
   fi
 }
