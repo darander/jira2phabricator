@@ -60,7 +60,8 @@ parse_dom () {
   elif [[ $TAG_NAME = "attachment" ]] ; then
     eval local $ATTRIBUTES
     mkdir -p tempdl
-    wget $JIRA/$id/$name -O "tempdl/$name"
+    wgetname=`echo $name | sed -e 's/ /%20/g'`
+    wget $JIRA/$id/$wgetname -O "tempdl/$name"
     FID=`$ARC upload --conduit-token=$ARCKEY --conduit-uri=$PHAB "tempdl/$name" 2>log  |grep "$name" | cut -d ' ' -f 3`
     $ARCYON task-update --uri $PHAB --user $USER --cert $CERT --act-as-user $author $owner $TID --comment "On $created, $author uploaded $name as $FID"
     [[ -n "$FID" ]] && rm "tempdl/$name"
