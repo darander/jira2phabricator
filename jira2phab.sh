@@ -145,7 +145,7 @@ parse_dom () {
     desc="On $taskcreated, @$reportername created task:\n\n $desc"
     $ARCYON task-update --uri $PHAB --user $USER --cert $CERT  --act-as-user "$author" $owner $TID --description "$(echo -e $desc)"
     echo $ARCYON task-update --uri $PHAB --user $USER --cert $CERT  --act-as-user "$author" $owner $TID --description "$(echo -e $desc)"
-
+    desc=""
     if [ -n "$phabstat" ] ; then
       echo Final status $phabstat
       resdesc="On $phabstatres, status was set to $phabstatresolution \n\n$phabstatdesc"
