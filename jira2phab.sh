@@ -50,13 +50,15 @@ parse_dom () {
   if [[ $TAG_NAME = "title" ]] ; then
     eval local $ATTRIBUTES
     #echo "Title: $CONTENT"
-    echo $ARCYON task-create --uri $PHAB --user $USER --cert $CERT $reporter $owner --projects "$PROJ" --format-id "$CONTENT"
-   TID=`$ARCYON task-create --uri $PHAB --user $USER --cert $CERT $reporter $owner --projects "$PROJ" --format-id "$CONTENT"`
-   echo TID $TID
+    ttitle=$CONTENT
+
   elif [[ $TAG_NAME = "reporter" ]] ; then
     eval local $ATTRIBUTES
-    reporter="--act-as-user $username"
     reportername=$username
+    reporter="--act-as-user $reportername"
+    echo $ARCYON task-create --uri $PHAB --user $USER --cert $CERT $reporter $owner --projects "$PROJ" --format-id "$ttitle"
+    TID=`$ARCYON task-create --uri $PHAB --user $USER --cert $CERT $reporter $owner --projects "$PROJ" --format-id "$ttitle"`
+    echo TID $TID
   elif [[ $TAG_NAME = "attachment" ]] ; then
     eval local $ATTRIBUTES
     mkdir -p tempdl
@@ -77,7 +79,8 @@ parse_dom () {
     fi
   elif [[ $TAG_NAME = "assignee" ]] ; then
     eval local $ATTRIBUTES
-    owner="--owner $username"
+    ownername=$username
+    owner="--owner $ownername"
   elif [[ $TAG_NAME = "label" ]] ; then
     eval local $ATTRIBUTES
     [[ -n "$CONTENT" ]] && lbls="$lbls $CONTENT,"
@@ -143,8 +146,8 @@ parse_dom () {
     vers="\nAffects versions: "
     fixvers="\nFix version: "
     desc="On $taskcreated, @$reportername created task:\n\n $desc"
-    $ARCYON task-update --uri $PHAB --user $USER --cert $CERT  --act-as-user "$author" $owner $TID --description "$(echo -e $desc)"
-    echo $ARCYON task-update --uri $PHAB --user $USER --cert $CERT  --act-as-user "$author" $owner $TID --description "$(echo -e $desc)"
+    $ARCYON task-update --uri $PHAB --user $USER --cert $CERT  --act-as-user "$reportername" $owner $TID --description "$(echo -e $desc)"
+    echo $ARCYON task-update --uri $PHAB --user $USER --cert $CERT  --act-as-user "$reportername" $owner $TID --description "$(echo -e $desc)"
     desc=""
     if [ -n "$phabstat" ] ; then
       echo Final status $phabstat
@@ -152,6 +155,13 @@ parse_dom () {
       $ARC close --conduit-uri=$PHAB --conduit-token=$ARCKEY $TID --status=$phabstat -m "$(echo -e $resdesc)"
       echo $ARC close --conduit-uri=$PHAB --conduit-token=$ARCKEY $TID --status=$phabstat -m "$(echo -e $resdesc)"
     fi
+
+    # Further cleanup
+    owner=""
+    ownername=""
+    reporter=""
+    reportername=""
+    ttitle=""
   fi
 }
 
