@@ -66,7 +66,7 @@ parse_dom () {
     wget $JIRA/$id/$wgetname -O "tempdl/$name"
     echo $ARC upload --conduit-token=$ARCKEY --conduit-uri=$PHAB "tempdl/$name"
     FID=`$ARC upload --conduit-token=$ARCKEY --conduit-uri=$PHAB "tempdl/$name" |grep "$name" | cut -d ' ' -f 3`
-    $ARCYON task-update --uri $PHAB --user $USER --cert $CERT --act-as-user $author $owner $TID --comment "On $created, $author uploaded $name as $FID"
+    $ARCYON task-update --uri $PHAB --user $USER --cert $CERT --act-as-user $author $owner $TID --comment "On $created, $author uploaded {$FID}"
     [[ -n "$FID" ]] && rm "tempdl/$name"
   elif [[ $TAG_NAME = "description" ]] ; then
     eval local $ATTRIBUTES
